@@ -4,13 +4,6 @@ FROM php:7.4-fpm-alpine3.13
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
     apk update && \
     apk add --no-cache \
-    gcc \
-    curl-dev \
-    c-ares-dev \
-    linux-headers \
-    make \
-    libffi-dev \
-    libtool \
     autoconf \
     build-base \
     libevent-dev \
@@ -19,13 +12,12 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     libzip-dev \
     openssl-dev && \
     docker-php-ext-install sockets pcntl pdo_mysql bcmath zip && \
-    pecl install redis mongodb uuid && \
-    docker-php-ext-enable redis mongodb uuid opcache && \
-    pecl install event && \
-    pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="no" enable-swoole-curl="yes" enable-cares="yes"' swoole
+    pecl install redis mongodb uuid xdebug && \
+    docker-php-ext-enable redis mongodb uuid opcache xdebug && \
+    pecl install event
 
 COPY ./event.ini /usr/local/etc/php/conf.d/
-COPY ./swoole.ini /usr/local/etc/php/conf.d/
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/
 
 RUN apk add --no-cache \
     libpng-dev \
