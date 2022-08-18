@@ -22,12 +22,10 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     pecl install redis mongodb uuid && \
     docker-php-ext-enable redis mongodb uuid opcache && \
     pecl install event && \
-    pecl install xdebug && \
     pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="no" enable-swoole-curl="yes" enable-cares="yes"' swoole
 
 COPY ./event.ini /usr/local/etc/php/conf.d/
 COPY ./swoole.ini /usr/local/etc/php/conf.d/
-COPY ./xdebug.ini /usr/local/etc/php/conf.d/
 
 RUN apk add --no-cache \
     libpng-dev \

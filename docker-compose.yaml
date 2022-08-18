@@ -1,15 +1,15 @@
 version: '3'
 services:
-  fj-php-d:
+  php-d:
     restart: always
-    container_name: fj-php-debug
+    container_name: php
     build:
       context: ./
-    image: fj-php-d
+    image: php
     links:
-      - fj-rabbitmq
-      - fj-redis
-      - fj-mongo
+      - rabbitmq
+      - redis
+      - mongo
 #      - mysql
     ports:
       - "8000:8000"
@@ -24,7 +24,7 @@ services:
     stdin_open: true
     tty: true
 
-  fj-rabbitmq:
+  rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.8.27-management-alpine
     ports:
@@ -35,7 +35,7 @@ services:
     volumes:
       - D:\WWW\docker\rabbitmq:/var/log/rabbitmq/
 
-  fj-redis:
+  redis:
     restart: always
     container_name: redis
     image: redis:6.2.6-alpine
@@ -45,7 +45,7 @@ services:
       - D:\WWW\docker\redis:/var/log/redis/
 
 
-  fj-mongo:
+  mongo:
     container_name: mongo
     image: mongo:4.2.9
     ports:
