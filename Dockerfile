@@ -21,6 +21,9 @@ RUN docker-php-ext-install sockets pcntl pdo_mysql bcmath zip && \
 
 
 COPY ./event.ini /usr/local/etc/php/conf.d/
+
+
+
 COPY ./swoole.ini /usr/local/etc/php/conf.d/
 
 
@@ -32,17 +35,14 @@ RUN apk add --no-cache \
     docker-php-ext-configure gd \
     --with-jpeg=/usr/include/ \
     --with-freetype=/usr/include/ && \
-    docker-php-ext-install gd && \
-    apk add composer && composer selfupdate
+    docker-php-ext-install gd
+
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
 
 RUN php -m
 
 
-
-
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody.nobody /run
 
 # Setup document root
 RUN mkdir -p /var/www
