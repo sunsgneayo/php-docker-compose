@@ -1,0 +1,27 @@
+version: '3'
+services:
+  php:
+    container_name: php8
+    build:
+      context: ./
+    image: php8
+    environment:
+      - "TIMEZONE=Asia/Shanghai"
+      - "APP_PROJECT=php-swoole-hy"
+      - "APP_SYSTEM_ENV=docker"
+    working_dir: "/var/www"
+    ports:
+      - "9501:9501"
+      - "9502:9502"
+      - "9503:9503"
+      - "9504:9504"
+      - "9505:9505"
+    volumes:
+      - F:\php\:/var/www
+    tty: true
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "10"
+
