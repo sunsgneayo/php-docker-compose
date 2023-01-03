@@ -1,0 +1,75 @@
+version: '3'
+services:
+  php8:
+    container_name: fj-php8
+    build:
+      context: ./
+    image: php
+    environment:
+      - "TIMEZONE=Asia/Shanghai"
+      - "APP_PROJECT=php"
+      - "APP_SYSTEM_ENV=docker"
+    working_dir: "/var/www"
+    links:
+      - fj-rabbitmq
+      - fj-redis
+      - fj-mongo
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    volumes:
+      - C:\WWW\php:/var/www
+    tty: true
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "10"
+        
+  fj-rabbitmq:
+    container_name: fj-rabbitmq
+    image: rabbitmq:3.8.27-management-alpine
+    ports:
+      - "5671:5671"
+      - "5672:5672"
+      - "15671:15671"
+      - "15672:15672"
+    volumes:
+      - D:\WWW\docker\rabbitmq:/var/log/rabbitmq/
+
+  fj-redis:
+    restart: always
+    container_name: fj-redis
+    image: redis:6.2.6-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - D:\WWW\docker\redis:/var/log/redis/
+
+
+  fj-mongo:
+    container_name: fj-mongo
+    image: mongo:4.2.9
+    ports:
+      - "27017-27019:27017-27019"
+      - "28017:28017"
+    volumes:
+      - D:\WWW\docker\mongo:/var/log/mongo/
+
+#  mysql:
+#    restart: always
+#    image: mysql:latest
+#    container_name: mysql
+#    volumes:
+#      - D:\WWW\docker\mysql\data:/var/lib/mysql
+#      - D:\WWW\docker\mysql\my.cnf:/etc/my.cnf
+#      # 数据库还原目录 可将需要还原的sql文件放在这
+#      - D:\WWW\docker\mysql\source:/docker-entrypoint-initdb.d
+#    environment:
+#      - "MYSQL_ROOT_PASSWORD=123456"
+#      - "TZ=Asia/Shanghai"
+#    ports:
+#      - "3306:3306"
+#      - "3307:3307"
+#      - "3308:3308"
