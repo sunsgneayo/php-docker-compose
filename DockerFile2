@@ -1,0 +1,52 @@
+# 生产环境镜像
+FROM php:8.1-cli-alpine AS prod
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk update && \
+    # 安装基础依赖
+    apk add --no-cache \
+    autoconf \
+    build-base \
+    libevent-dev \
+    libuuid \
+    e2fsprogs-dev \
+    libzip-dev \
+    openssl-dev \
+    libpq-dev \
+    rabbitmq-c-dev \
+    libpng-dev \
+    libwebp-dev \
+    libjpeg-turbo-dev \
+    freetype-dev && \
+    # 配置GD库
+    docker-php-ext-configure gd \
+    --with-jpeg=/usr/include/ \
+    --with-freetype=/usr/include/ && \
+    # 安装php扩展
+    docker-php-ext-install sockets pcntl pdo_mysql pdo_pgsql bcmath zip gd && \
+    # 安装pecl扩展
+    pecl install redis mongodb uuid amqp event && \
+    # 启用pecl扩展
+    docker-php-ext-enable redis mongodb uuid amqp && \
+    # 启用event
+    docker-php-ext-enable --ini-name event.ini event && \
+    # 安装composer
+    curl -o /usr/local/bin/composer https://mirrors.aliyun.com/composer/composer.phar && chmod +x /usr/local/bin/composer
+
+EXPOSE 8000
+VOLUME /var/www
+WORKDIR /var/www
+
+# 如果docker只编译到这里（用于生产环境），那么自动安装依赖并启动服务器
+CMD composer install --no-dev && php webman start
+
+# 开发环境镜像
+FROM prod AS dev
+
+# 安装xdebug 用于单元测试和本地调试
+RUN apk add --no-cache linux-headers && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug
+
+# 覆盖启动命令，不再直接启动服务器，而是用一个空进程维持容器运行
+STOPSIGNAL SIGKILL
+CMD tail -f /dev/null
