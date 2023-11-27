@@ -1,4 +1,4 @@
-FROM  php:8.1-cli-alpine
+FROM  php:8.2-cli-alpine
 
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk update && \
