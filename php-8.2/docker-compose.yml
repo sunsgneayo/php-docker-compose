@@ -59,8 +59,10 @@ services:
       # 初始化默认账户&密码
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin@2023
-    # 开启安全认证
-    command: ["--auth"]
+    # 开启安全认证，开放端口
+    # --wiredTigerCacheSizeGB=2 限制使用最大内存
+    # command: ["--auth"]
+    command: ["--port", "27017", "--auth"  , "--wiredTigerCacheSizeGB=2"]
     ports:
       - "27017-27019:27017-27019"
       - "28017:28017"
